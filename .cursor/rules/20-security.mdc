@@ -1,0 +1,12 @@
+---
+description: Offline, privacy, and Git security requirements
+alwaysApply: true
+---
+# Security rules
+- No handling or configuration of mTLS client certificates or keys; the existing approved Git client handles remote authentication before analysis.
+- No network-capable Git commands in the CLI. Git config aliases, hooks, external diff/textconv, LFS smudge, and submodules must not be executed or fetched by the tool.
+- Use --no-ext-diff and --no-textconv for git diff. Consider sanitized Git environment and config overrides for risky Git features; document any residual risks.
+- Do not execute scripts from the analyzed repository.
+- Output may contain confidential diffs: default to local output path, add output/ to .gitignore, never upload or log secrets, and document retention.
+- Ensure Git errors, binary files, LFS pointer files, submodules, renamed/deleted files, and partial coverage are reported explicitly.
+- Offline-by-design is not a network firewall: document OS/WSL network enforcement separately.

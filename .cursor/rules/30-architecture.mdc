@@ -1,0 +1,14 @@
+---
+description: Review pipeline and architecture boundaries
+alwaysApply: true
+---
+# Architecture
+- Separate git_adapter, diff_parser, python_indexer, dependency_index, context_builder, reporters, cli, tests.
+- The first milestone produces JSON and Markdown without AI.
+- Preserve traceability: each finding/context item links to commit SHA, path, line range, and evidence.
+- Support base/head merge-base semantics and explicit two-dot comparison mode; document both.
+- Analyze changed lines in both old and new revisions to cover deletions and edits.
+- For Python, parse AST for definitions, imports, and references; support configurable import roots and relative imports in subsequent milestone.
+- For Angular/TypeScript Phase 1, collect diff and file metadata only; do not pretend full AST/NgRx dependency analysis is implemented.
+- Deterministic ordering and stable JSON schema; version the output schema.
+- Output warnings and coverage metrics for unsupported or unparseable inputs.

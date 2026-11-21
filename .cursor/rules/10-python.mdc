@@ -1,0 +1,16 @@
+---
+description: Python implementation and test standards
+globs: "**/*.py"
+alwaysApply: false
+---
+# Python standards
+- Python 3.13; type hints for public functions; pathlib and dataclasses where appropriate.
+- Prefer small, pure functions and dependency injection over global mutable state.
+- Use subprocess.run with argument arrays, shell=False, check=True, timeouts, explicit cwd or git -C. Never interpolate untrusted input into a shell.
+- Handle Git output as bytes when dealing with filenames; use -z for name/status output and decode using surrogateescape where appropriate.
+- Use -- before Git pathspecs. Validate revision parameters and avoid option injection; resolve revisions to commit object IDs before diffing.
+- Read tracked content from the selected Git commit (git show <sha>:<path> or cat-file), not the worktree.
+- Handle malformed UTF-8, SyntaxError, missing objects, subprocess errors, timeout, and paths with spaces/unicode.
+- Avoid quadratic scanning when indexing imports. Build module-name lookup and reverse-import index in one pass, with clear complexity bounds.
+- Distinguish confirmed references from heuristic candidates.
+- Add unittest tests for normal and edge cases, and temporary local Git repositories for integration tests.

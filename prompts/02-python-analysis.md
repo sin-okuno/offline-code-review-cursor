@@ -1,0 +1,3 @@
+# Cursor Prompt 02 — Python AST and dependencies
+
+Read the rules and requirements. Extend the working Phase 1 tool without breaking existing tests. Parse Python content from Git objects for BOTH revisions; map changed old/new lines to affected functions, classes, nested functions and top-level statements. Handle deleted-only edits and syntax errors with explicit warnings. Implement a one-pass module-name/import index with configurable Python roots, plus reverse import candidate lookup. Distinguish unresolved imports and uncertain matches. Preserve deterministic, versioned JSON and Markdown. Add unit/integration tests, run the full suite, fix failures, and summarize exact CLI commands and limitations.

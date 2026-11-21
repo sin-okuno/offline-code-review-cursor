@@ -1,0 +1,13 @@
+---
+description: Offline Code Review CLI project principles
+alwaysApply: true
+---
+# Project rules
+- Build a production-oriented, testable CLI, not demonstration-only code.
+- Target Python 3.13 on Windows 11 and WSL2. Phase 1 runtime dependencies: Python standard library and installed Git only.
+- The review CLI MUST NOT invoke network Git operations (clone/fetch/pull/push/remote/ls-remote), access HTTP APIs, download packages, or invoke external LLMs.
+- Cursor is used only for development with synthetic/public test repositories. Never paste or upload company code, private repository URLs, client certificates, private keys, tokens, or internal configuration into Cursor AI.
+- Do not modify the reviewed repository or run its code, build scripts, Git hooks, tests, or package managers. Read only Git objects and metadata.
+- Use explicit CLI parameters; avoid hidden defaults. Report incomplete coverage and analysis errors, never silently claim a complete review.
+- All changes require automated tests and updated docs. Do not claim tests passed unless executed and observed.
+- Never hardcode absolute local paths, secrets, or company-specific identifiers.

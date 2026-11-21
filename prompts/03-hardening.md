@@ -1,0 +1,3 @@
+# Cursor Prompt 03 — Real-world hardening and acceptance
+
+Review `docs/requirements.md` and all rules. Audit the implementation for: option injection via refs, shell execution, Git external diff/textconv, credential leakage, network-capable commands, Git LFS pointers, submodules, binary diffs, unicode/space filenames, added/deleted/renamed files, worktree differing from HEAD, malformed Python, large repo performance, output location and read-only behavior. Add realistic synthetic Angular+DRF fixtures and tests. Do not execute scripts from fixtures. Run all tests and a CLI smoke test. Fix defects, document residual limitations and exact observed results in `docs/validation.md`. Do not claim that actual company code was tested.
