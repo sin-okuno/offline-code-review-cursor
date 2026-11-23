@@ -1,0 +1,18 @@
+{
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "cases": [
+    "ANG-001",
+    "ANG-002",
+    "ANG-003",
+    "ANG-004",
+    "ANG-005",
+    "ANG-006",
+    "ANG-007",
+    "ANG-008",
+    "ANG-009",
+    "ANG-010",
+    "CLEAN-001",
+    "CLEAN-002"
+  ],
+  "schema_version": "1.0"
+}

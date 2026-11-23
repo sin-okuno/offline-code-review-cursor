@@ -1,0 +1,12 @@
+---
+description: Conservative TypeScript and Angular source indexing
+alwaysApply: true
+---
+# TypeScript/Angular indexing
+- The stdlib does not contain a TypeScript parser. Implement a conservative lexical scanner (comments, strings, template literals, delimiters) or a clearly documented partial extractor. Do NOT claim full AST/semantic support.
+- Extract only well-supported constructs: import/export specifiers, named classes, functions, methods where unambiguous, `@Component` metadata (`selector`, `templateUrl`, `styleUrls`, `standalone`), NgModule declarations/imports, and known NgRx symbols where explicit.
+- Handle multiline imports, aliases, relative imports, `.ts`/`index.ts` candidates, case-sensitive canonical repo paths, `tsconfig` path aliases only when safely resolvable.
+- Do not parse arbitrary regex over raw TS without masking comments and strings; unresolved syntax is a warning, not a guessed match.
+- Build indexes independently for base and head to support removals and renamed files.
+- Template link via explicit `templateUrl` is confirmed; selector usage and template references are heuristic unless verified.
+- Add tests for comments, quoted fake imports, multiline import, alias, relative path, ambiguous resolution, Windows paths, decorators, and deletion-only changes.

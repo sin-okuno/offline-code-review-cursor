@@ -100,7 +100,10 @@ class ScaffoldIntegrationTests(unittest.TestCase):
         self.assertEqual((self.output / "review-context.json").read_bytes(), first)
 
         report = json.loads(first.decode("utf-8"))
-        self.assertTrue(first.decode("utf-8").startswith('{\n  "comparison"'))
+        text = first.decode("utf-8")
+        self.assertTrue(text.startswith('{\n  "angular_context"'))
+        self.assertIn('\n  "comparison"', text)
+        self.assertLess(text.index('"angular_context"'), text.index('"comparison"'))
         self.assertEqual(report["schema_version"], "1.1.0")
         self.assertEqual(report["tool"]["phase"], "2-python")
         comparison = report["comparison"]

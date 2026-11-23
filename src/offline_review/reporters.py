@@ -9,6 +9,7 @@ from pathlib import Path
 
 from offline_review.models import (
     AffectedSymbol,
+    AngularContext,
     Comparison,
     Coverage,
     FileChange,
@@ -45,6 +46,7 @@ def write_reports(context: ReviewContext, output_dir: Path) -> tuple[Path, Path]
 
 def render_json(context: ReviewContext) -> str:
     payload = {
+        "angular_context": _angular(context.angular_context),
         "comparison": _comparison(context.comparison),
         "coverage": _coverage(context.coverage),
         "errors": [redact_secrets(item) for item in context.errors],
@@ -143,6 +145,7 @@ def render_markdown(context: ReviewContext) -> str:
             f"- {item.direction} | {item.certainty} | {item.kind} | {item.changed_path} | "
             f"{module} | {other} | line {item.line} | {redact_secrets(item.evidence)}"
         )
+    lines.extend(_markdown_angular(context.angular_context))
     lines.extend(["", "## Changed files", ""])
     if not context.files:
         lines.append("No changed files.")
@@ -154,6 +157,266 @@ def render_markdown(context: ReviewContext) -> str:
             lines.append(f"- {redact_secrets(error)}")
     lines.append("")
     return "\n".join(lines)
+
+
+def _angular(context: AngularContext) -> dict[str, object]:
+    coverage = context.coverage
+    return {
+        "analysis_method": context.analysis_method,
+        "coverage": {
+            "base_commit": coverage.base_commit,
+            "head_commit": coverage.head_commit,
+            "line_budget": coverage.line_budget,
+            "lines_omitted": coverage.lines_omitted,
+            "lines_selected": coverage.lines_selected,
+            "ngrx": coverage.ngrx,
+            "template_bindings": coverage.template_bindings,
+            "truncated": coverage.truncated,
+            "typescript_semantic": coverage.typescript_semantic,
+        },
+        "changed_symbols": [
+            {
+                "commit": item.commit,
+                "kind": item.kind,
+                "line_end": item.line_end,
+                "line_start": item.line_start,
+                "path": item.path,
+                "qualname": item.qualname,
+                "revision": item.revision,
+            }
+            for item in context.changed_symbols
+        ],
+        "changed_line_files": [
+            {
+                "changed_lines_included": item.changed_lines_included,
+                "changed_lines_omitted": item.changed_lines_omitted,
+                "changed_lines_total": item.changed_lines_total,
+                "path": item.path,
+                "revision": item.revision,
+            }
+            for item in context.changed_line_files
+        ],
+        "edges": [
+            {
+                "confidence": edge.confidence,
+                "evidence": edge.evidence,
+                "from_path": edge.from_path,
+                "kind": edge.kind,
+                "line": edge.line,
+                "resolution_reason": edge.resolution_reason,
+                "source_revision": edge.source_revision,
+                "to_path": edge.to_path,
+                "to_symbol": edge.to_symbol,
+            }
+            for edge in context.edges
+        ],
+        "nodes": [
+            {"commit": node.commit, "path": node.path, "symbol": node.symbol}
+            for node in context.nodes
+        ],
+        "omitted": [
+            {
+                "commit": item.commit,
+                "missing_lines": item.missing_lines,
+                "path": item.path,
+                "reason": item.reason,
+                "resolution_reason": item.resolution_reason,
+                "revision": item.revision,
+            }
+            for item in context.omitted
+        ],
+        "schema": context.schema,
+        "review_units": [
+            {
+                "excerpts": [
+                    {
+                        "commit": item.commit,
+                        "confidence": item.confidence,
+                        "content": item.content,
+                        "line_end": item.line_end,
+                        "line_start": item.line_start,
+                        "path": item.path,
+                        "reason": item.reason,
+                        "revision": item.revision,
+                    }
+                    for item in unit.excerpts
+                ],
+                "line_count": unit.line_count,
+                "unit_id": unit.unit_id,
+            }
+            for unit in context.review_units
+        ],
+        "selected": [
+            {
+                "commit": item.commit,
+                "confidence": item.confidence,
+                "content": item.content,
+                "line_end": item.line_end,
+                "line_start": item.line_start,
+                "path": item.path,
+                "reason": item.reason,
+                "revision": item.revision,
+                "score": item.score,
+            }
+            for item in context.selected
+        ],
+        "status": context.status,
+        "unresolved": [
+            {
+                "confidence": item.confidence,
+                "evidence": item.evidence,
+                "from_path": item.from_path,
+                "kind": item.kind,
+                "line": item.line,
+                "resolution_reason": item.resolution_reason,
+                "source_revision": item.source_revision,
+                "to_path": item.to_path,
+                "to_symbol": item.to_symbol,
+            }
+            for item in context.unresolved
+        ],
+        "warnings": [_warning(item) for item in context.warnings],
+    }
+
+
+def _markdown_angular(context: AngularContext) -> list[str]:
+    coverage = context.coverage
+    lines = [
+        "",
+        "## Angular context",
+        "",
+        f"- Schema: {context.schema}",
+        f"- Status: {context.status}",
+        f"- Analysis method: {context.analysis_method}",
+        f"- TypeScript semantic: {coverage.typescript_semantic}",
+        f"- Template bindings: {coverage.template_bindings}",
+        f"- NgRx: {coverage.ngrx}",
+        f"- Line budget: {coverage.lines_selected}/{coverage.line_budget} selected, {coverage.lines_omitted} omitted",
+        f"- Review units: {len(context.review_units)}",
+        (
+            "- Changed lines across review units: "
+            f"{sum(item.changed_lines_included for item in context.changed_line_files)} included, "
+            f"{sum(item.changed_lines_omitted for item in context.changed_line_files)} omitted"
+        ),
+        f"- Truncated: {_yes_no(coverage.truncated)}",
+        "",
+        "### Git change summary",
+        "",
+        f"- Base commit: {coverage.base_commit or '(none)'}",
+        f"- Head commit: {coverage.head_commit or '(none)'}",
+        "",
+        "### Changed symbols",
+        "",
+    ]
+    if not context.changed_symbols:
+        lines.append("(none)")
+        lines.append("")
+    for item in context.changed_symbols:
+        lines.append(
+            f"- {item.revision} | {item.path} | {item.qualname} | {item.kind} | {item.line_start}-{item.line_end}"
+        )
+    lines.extend(["", "### Angular impact", ""])
+    impact = [edge for edge in context.edges if edge.kind in {"template_binding", "component_template", "component_selector"}]
+    lines.extend(_edge_lines(impact))
+    lines.extend(["### NgRx paths", ""])
+    ngrx = [edge for edge in context.edges if edge.kind.startswith("ngrx_") or edge.kind == "service_reference"]
+    lines.extend(_edge_lines(ngrx))
+    lines.extend(["### Priority review targets", ""])
+    ranked = sorted(context.selected, key=lambda item: (-item.score, item.path, item.revision, item.line_start))
+    if not ranked:
+        lines.append("(none)")
+        lines.append("")
+    for item in ranked:
+        lines.append(f"- {item.score} | {item.reason} | {item.revision} | {item.path}:{item.line_start}-{item.line_end}")
+    lines.extend(["", "### Related code", "", "### Selected excerpts", ""])
+    if not context.selected:
+        lines.append("(none)")
+        lines.append("")
+    for item in context.selected:
+        lines.extend(
+            [
+                f"#### {item.path}",
+                "",
+                f"- Revision: {item.revision}",
+                f"- Commit: {item.commit}",
+                f"- Lines: {item.line_start}-{item.line_end}",
+                f"- Reason: {item.reason}",
+                f"- Score: {item.score}",
+                f"- Confidence: {item.confidence}",
+                "",
+                _fence(item.content),
+                "",
+            ]
+        )
+    later = [unit for unit in context.review_units if unit.unit_id != "unit-1"]
+    lines.extend(["### Later review units", ""])
+    if not later:
+        lines.append("(none)")
+        lines.append("")
+    for unit in later:
+        lines.append(f"#### {unit.unit_id} ({unit.line_count} lines)")
+        lines.append("")
+        for item in unit.excerpts:
+            lines.extend(
+                [
+                    f"##### {item.path}",
+                    "",
+                    f"- Revision: {item.revision}",
+                    f"- Commit: {item.commit}",
+                    f"- Lines: {item.line_start}-{item.line_end}",
+                    f"- Reason: {item.reason}",
+                    "",
+                    _fence(item.content),
+                    "",
+                ]
+            )
+    lines.extend(["### Omitted", ""])
+    if not context.omitted:
+        lines.append("(none)")
+    for item in context.omitted:
+        lines.append(f"- {item.reason} | {item.revision} | {item.commit} | {item.path} | missing {item.missing_lines}")
+    lines.extend(["", "### Unresolved dependencies", ""])
+    if not context.unresolved:
+        lines.append("(none)")
+    for item in context.unresolved:
+        lines.append(
+            f"- {item.resolution_reason or item.confidence} | {item.kind} | {item.from_path} | {item.to_symbol or item.to_path or '(none)'}"
+        )
+    lines.extend(
+        [
+            "",
+            "### Analysis limits",
+            "",
+            "- Template expressions are lexical. Type checking, control-flow, and `tsconfig` extends are out of scope.",
+            "- Selector matches are candidates. A hyphenated tag is not a confirmed component edge.",
+            "- NgRx edges require an imported name used by `dispatch`, `select`, `ofType`, `on`, or `inject`.",
+            "- Effect method calls that are not an imported service injection are not followed to an API.",
+            "",
+        ]
+    )
+    return lines
+
+
+def _edge_lines(edges: list) -> list[str]:
+    if not edges:
+        return ["(none)", ""]
+    return [
+        f"- {item.confidence} | {item.kind} | {item.from_path} -> {item.to_path or '(unresolved)'} | {item.to_symbol or '(none)'}"
+        for item in edges
+    ] + [""]
+
+
+def _fence(content: str) -> str:
+    run = 0
+    longest = 0
+    for char in content:
+        if char == "`":
+            run += 1
+            longest = max(longest, run)
+        else:
+            run = 0
+    marker = "`" * max(3, longest + 1)
+    return f"{marker}\n{content}\n{marker}"
 
 
 def _markdown_file(index: int, change: FileChange) -> list[str]:

@@ -1,0 +1,10 @@
+---
+description: Quality gates for CLI implementation
+alwaysApply: true
+---
+# Quality gates
+- Python 3.13, type hints, small modules, explicit errors, `unittest` and synthetic temporary Git repos.
+- Use `subprocess.run` with argv list, `shell=False`, timeout, no Git remote operations, no repo hooks or custom diff drivers, and binary-safe Git path parsing.
+- Bound file sizes, output sizes, traversal depth and processing time. Treat repo content as untrusted data and never execute it.
+- Reports must be reproducible, include exact base/head SHAs, extraction coverage, warnings and versioned JSON fields.
+- Run unit, integration, regression, and performance smoke tests after each phase. Show actual commands, outputs, failures and limitations; do not claim success without running tests.

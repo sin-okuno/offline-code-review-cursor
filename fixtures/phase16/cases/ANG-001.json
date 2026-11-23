@@ -1,0 +1,48 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "345362e208ffc852e070d5deee361e7523bd3397",
+  "case_id": "ANG-001",
+  "case_kind": "defect",
+  "expected_behavior": "A failure action is emitted when the load request fails",
+  "expected_finding": "API failure path does not emit a failure action",
+  "match_terms": [
+    "failure action",
+    "api failure"
+  ],
+  "primary_locations": [
+    {
+      "end_line": 25,
+      "path": "src/app/beacon/beacon.effects.ts",
+      "start_line": 25,
+      "symbol": "loadBeaconsEffect"
+    }
+  ],
+  "reproduction": "Compare the load effect with the baseline. The baseline emits loadBeaconsFailure from catchError.",
+  "required_context": [
+    {
+      "path": "src/app/beacon/beacon.effects.ts",
+      "reason": "failure path was removed",
+      "symbol": "loadBeaconsEffect"
+    },
+    {
+      "path": "src/app/beacon/beacon.service.ts",
+      "reason": "HTTP call can fail",
+      "symbol": "loadBeacons"
+    },
+    {
+      "path": "src/app/beacon/beacon.reducer.ts",
+      "reason": "failure state is unchanged",
+      "symbol": "beaconReducer"
+    }
+  ],
+  "schema_version": "1.0",
+  "severity": "high",
+  "tags": [
+    "angular",
+    "ngrx",
+    "effect",
+    "error-handling"
+  ],
+  "title": "Load effect drops API failures"
+}

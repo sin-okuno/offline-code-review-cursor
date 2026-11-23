@@ -1,0 +1,42 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "56218f40f5b3f3ce40bb9e2db2c0586ab4f27354",
+  "case_id": "ANG-007",
+  "case_kind": "defect",
+  "expected_behavior": "The detail request uses the same id that was selected",
+  "expected_finding": "The detail request uses a different id from the selected beacon",
+  "match_terms": [
+    "different id",
+    "selected"
+  ],
+  "primary_locations": [
+    {
+      "end_line": 45,
+      "path": "src/app/beacon/beacon.component.ts",
+      "start_line": 44,
+      "symbol": "choose"
+    }
+  ],
+  "reproduction": "The baseline choose method sends the same beaconId to both actions.",
+  "required_context": [
+    {
+      "path": "src/app/beacon/beacon.component.ts",
+      "reason": "selection and detail ids differ",
+      "symbol": "choose"
+    },
+    {
+      "path": "src/app/beacon/beacon.effects.ts",
+      "reason": "the effect loads action.beaconId",
+      "symbol": "loadBeaconDetailEffect"
+    }
+  ],
+  "schema_version": "1.0",
+  "severity": "high",
+  "tags": [
+    "angular",
+    "ngrx",
+    "effect"
+  ],
+  "title": "Detail load uses a different id from the selection"
+}

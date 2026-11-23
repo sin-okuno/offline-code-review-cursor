@@ -1,0 +1,47 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "c62df61973335c51d5b0266b5f09aa5f2611a21d",
+  "case_id": "ANG-003",
+  "case_kind": "defect",
+  "expected_behavior": "The displayed name comes from the beacon whose id is selectedId",
+  "expected_finding": "The selector returns notice instead of the selected beacon name",
+  "match_terms": [
+    "wrong property",
+    "beacon name"
+  ],
+  "primary_locations": [
+    {
+      "end_line": 15,
+      "path": "src/app/beacon/beacon.selectors.ts",
+      "start_line": 13,
+      "symbol": "selectBeaconName"
+    }
+  ],
+  "reproduction": "The baseline selector finds the beacon by selectedId. The change returns notice.",
+  "required_context": [
+    {
+      "path": "src/app/beacon/beacon.selectors.ts",
+      "reason": "wrong property",
+      "symbol": "selectBeaconName"
+    },
+    {
+      "path": "src/app/beacon/beacon.reducer.ts",
+      "reason": "the selected beacon is stored here",
+      "symbol": "selectedId"
+    },
+    {
+      "path": "src/app/beacon/beacon.component.ts",
+      "reason": "the screen displays this selector",
+      "symbol": "selectBeaconName"
+    }
+  ],
+  "schema_version": "1.0",
+  "severity": "medium",
+  "tags": [
+    "angular",
+    "ngrx",
+    "selector"
+  ],
+  "title": "Selector reads the notice instead of the beacon name"
+}

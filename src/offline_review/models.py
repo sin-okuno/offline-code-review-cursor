@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 SCHEMA_VERSION = "1.1.0"
 TOOL_PHASE = "2-python"
+ANGULAR_CONTEXT_SCHEMA = "1"
 
 STATUS_LABELS: dict[str, str] = {
     "A": "added",
@@ -173,6 +174,133 @@ class Coverage:
 
 
 @dataclass(frozen=True, slots=True)
+class AngularNode:
+    commit: str
+    path: str
+    symbol: str | None
+
+
+@dataclass(frozen=True, slots=True)
+class AngularEdge:
+    kind: str
+    confidence: str
+    evidence: str
+    source_revision: str
+    from_path: str
+    to_path: str | None
+    to_symbol: str | None
+    line: int
+    resolution_reason: str = ""
+
+
+@dataclass(frozen=True, slots=True)
+class AngularSelection:
+    revision: str
+    commit: str
+    path: str
+    line_start: int
+    line_end: int
+    reason: str
+    confidence: str
+    content: str
+    score: int = 0
+
+
+@dataclass(frozen=True, slots=True)
+class AngularOmission:
+    revision: str
+    commit: str
+    path: str
+    reason: str
+    missing_lines: int = 0
+    resolution_reason: str = ""
+
+
+@dataclass(frozen=True, slots=True)
+class AngularCoverage:
+    typescript_semantic: str
+    template_bindings: str
+    truncated: bool
+    ngrx: str = "not_applicable"
+    base_commit: str = ""
+    head_commit: str = ""
+    line_budget: int = 0
+    lines_selected: int = 0
+    lines_omitted: int = 0
+
+
+@dataclass(frozen=True, slots=True)
+class AngularSymbol:
+    revision: str
+    commit: str
+    path: str
+    qualname: str
+    kind: str
+    line_start: int
+    line_end: int
+
+
+@dataclass(frozen=True, slots=True)
+class AngularUnresolved:
+    kind: str
+    confidence: str
+    resolution_reason: str
+    from_path: str
+    to_path: str | None
+    to_symbol: str | None
+    line: int
+    evidence: str
+    source_revision: str
+
+
+@dataclass(frozen=True, slots=True)
+class ReviewUnit:
+    unit_id: str
+    excerpts: tuple[AngularSelection, ...]
+    line_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class ChangedLineStat:
+    revision: str
+    path: str
+    changed_lines_total: int
+    changed_lines_included: int
+    changed_lines_omitted: int
+
+
+@dataclass(frozen=True, slots=True)
+class AngularContext:
+    schema: str
+    status: str
+    analysis_method: str
+    nodes: tuple[AngularNode, ...]
+    edges: tuple[AngularEdge, ...]
+    selected: tuple[AngularSelection, ...]
+    omitted: tuple[AngularOmission, ...]
+    warnings: tuple[Warning, ...]
+    coverage: AngularCoverage
+    changed_symbols: tuple[AngularSymbol, ...] = ()
+    unresolved: tuple[AngularUnresolved, ...] = ()
+    review_units: tuple[ReviewUnit, ...] = ()
+    changed_line_files: tuple[ChangedLineStat, ...] = ()
+
+
+def empty_angular_context() -> AngularContext:
+    return AngularContext(
+        schema="1",
+        status="not_applicable",
+        analysis_method="none",
+        nodes=(),
+        edges=(),
+        selected=(),
+        omitted=(),
+        warnings=(),
+        coverage=AngularCoverage("not_applicable", "unsupported", False),
+    )
+
+
+@dataclass(frozen=True, slots=True)
 class ReviewContext:
     schema_version: str
     tool_name: str
@@ -186,6 +314,7 @@ class ReviewContext:
     errors: tuple[str, ...]
     python_roots: tuple[str, ...] = ()
     import_relationships: tuple[ImportRelationship, ...] = ()
+    angular_context: AngularContext = field(default_factory=empty_angular_context)
 
 
 def status_label(status_code: str) -> str:

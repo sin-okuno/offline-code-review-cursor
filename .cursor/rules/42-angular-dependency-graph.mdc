@@ -1,0 +1,11 @@
+---
+description: Dependency graph, evidence and budget rules
+alwaysApply: true
+---
+# Dependency graph
+- Model nodes by commit SHA + repo-relative path + optional symbol; model directed edges with `kind`, `confidence` (`confirmed`/`candidate`), `evidence`, and `source_revision`.
+- Supported edge types: `ts_import`, `component_template`, `ngmodule_declaration`, `ngrx_action_reference`, `ngrx_effect_reference`, `ngrx_selector_reference`, `service_reference` when directly evidenced. Never infer runtime call chains solely from names.
+- Traverse both forward and reverse edges with max-depth, max-files, max-bytes limits; avoid cycles and deterministic sort.
+- Rank changed files first, then confirmed direct dependencies, confirmed reverse dependencies, then candidate edges. Preserve old revision for deletions.
+- When budget truncates context, record omitted items and `partial_reasons`; do not silently drop files.
+- Report Angular semantics as `partial` or `candidate_based` until robust parsing exists; never set `analysis_complete=true` just because no exception occurred.

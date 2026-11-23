@@ -1,0 +1,20 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "5c5a94541db679b2018f171150f9da23c33a7606",
+  "case_id": "CLEAN-002",
+  "case_kind": "clean",
+  "expected_behavior": "The display label changes and the store behavior stays the same",
+  "expected_finding": "No defect is expected",
+  "match_terms": [],
+  "primary_locations": [],
+  "reproduction": "Only READY_LABEL differs from the baseline.",
+  "required_context": [],
+  "schema_version": "1.0",
+  "severity": "low",
+  "tags": [
+    "angular",
+    "clean"
+  ],
+  "title": "Rename the ready label"
+}

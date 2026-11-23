@@ -1,0 +1,12 @@
+---
+description: Scope, security and compatibility for offline Angular context extraction
+alwaysApply: true
+---
+# Scope
+- Extend the existing `offline_review` CLI in place; inspect the actual repository and JSON schema before editing. Do not invent module names or rewrite working Git/Python functionality.
+- Cursor is for implementing this tool on synthetic/public fixtures ONLY. Never attach company repositories, source, Git diffs, credentials, or reports to Cursor/remote AI. If target repository is confidential, develop and test in an isolated fixture repository; deploy the finished reviewed tool separately.
+- Runtime analysis must be offline, read-only, deterministic and local. No network, cloud LLM, telemetry, remote Git commands, execution of analyzed code, npm install, or dynamic imports of target code.
+- Never modify the analyzed repository. Read files from immutable Git objects at resolved base/head SHAs, not the worktree.
+- Preserve existing CLI arguments, JSON fields, Python AST analysis, exit behavior and test coverage; additive schema changes only unless versioned.
+- Distinguish `analysis_complete`, `partial`, warnings and confidence honestly. No fabricated dependency edges or security findings.
+- Keep runtime dependencies to Python 3.13 standard library + Git for the initial implementation. A proper TypeScript parser may be proposed as an optional, separately approved future phase, not silently added.

@@ -1,0 +1,42 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "17057b42c2b792c7a0b537245a4fb21c9b849e09",
+  "case_id": "ANG-005",
+  "case_kind": "defect",
+  "expected_behavior": "The failure action keeps status 403 for a permission error",
+  "expected_finding": "HTTP 403 is reported as a generic network failure",
+  "match_terms": [
+    "403",
+    "permission"
+  ],
+  "primary_locations": [
+    {
+      "end_line": 54,
+      "path": "src/app/beacon/beacon.effects.ts",
+      "start_line": 54,
+      "symbol": "saveBeaconEffect"
+    }
+  ],
+  "reproduction": "The baseline copies error.status onto saveBeaconFailure.",
+  "required_context": [
+    {
+      "path": "src/app/beacon/beacon.effects.ts",
+      "reason": "status is discarded",
+      "symbol": "saveBeaconEffect"
+    },
+    {
+      "path": "src/app/beacon/beacon.service.ts",
+      "reason": "the HTTP client preserves the status",
+      "symbol": "saveBeacon"
+    }
+  ],
+  "schema_version": "1.0",
+  "severity": "medium",
+  "tags": [
+    "angular",
+    "ngrx",
+    "effect"
+  ],
+  "title": "Save failures collapse HTTP 403 into a generic network error"
+}

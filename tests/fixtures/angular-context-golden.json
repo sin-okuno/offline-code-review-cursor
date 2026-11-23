@@ -1,0 +1,183 @@
+{
+  "repository": "tree-sample",
+  "base_commit": "7e85d3ecf4e2e584a04a2a3fc930ab75a3f9a205",
+  "head_commit": "c034d66c1a28543160ae6e0f432f0c47c33ad8a1",
+  "comparison": "direct",
+  "weights": {"critical": 3, "high": 2, "normal": 1},
+  "items": [
+    {
+      "id": "api-signature",
+      "path": "src/app/product-tree/api/product-api.service.ts",
+      "symbol": "ProductApiService.getProductTree",
+      "criticality": "critical",
+      "why_required": "The method return type changes from Observable<readonly ProductTreeNode[]> to Observable<ProductTreeNode>. Both revisions are required.",
+      "evidence": [
+        {"revision": "base", "path": "src/app/product-tree/api/product-api.service.ts", "line": 15},
+        {"revision": "head", "path": "src/app/product-tree/api/product-api.service.ts", "line": 15}
+      ],
+      "ranges": [
+        {"revision": "base", "line_start": 15, "line_end": 16},
+        {"revision": "head", "line_start": 15, "line_end": 16}
+      ]
+    },
+    {
+      "id": "effect-call",
+      "path": "src/app/product-tree/state/product-tree.effects.ts",
+      "symbol": "ProductTreeEffects.loadTree$",
+      "criticality": "critical",
+      "why_required": "loadTree$ calls getProductTree and maps the result into the success action. The call line is required together with the map.",
+      "evidence": [
+        {"revision": "base", "path": "src/app/product-tree/state/product-tree.effects.ts", "line": 20},
+        {"revision": "head", "path": "src/app/product-tree/state/product-tree.effects.ts", "line": 35}
+      ],
+      "ranges": [
+        {"revision": "base", "line_start": 20, "line_end": 21},
+        {"revision": "head", "line_start": 35, "line_end": 36}
+      ]
+    },
+    {
+      "id": "success-action",
+      "path": "src/app/product-tree/state/product-tree.actions.ts",
+      "symbol": "LoadTreeSuccessAction",
+      "criticality": "critical",
+      "why_required": "The success payload changes from nodes: readonly ProductTreeNode[] to root: ProductTreeNode.",
+      "evidence": [
+        {"revision": "base", "path": "src/app/product-tree/state/product-tree.actions.ts", "line": 14},
+        {"revision": "head", "path": "src/app/product-tree/state/product-tree.actions.ts", "line": 21}
+      ],
+      "ranges": [
+        {"revision": "base", "line_start": 14, "line_end": 14},
+        {"revision": "head", "line_start": 17, "line_end": 21}
+      ]
+    },
+    {
+      "id": "reducer-state",
+      "path": "src/app/product-tree/state/product-tree.reducer.ts",
+      "symbol": "ProductTreeState",
+      "criticality": "critical",
+      "why_required": "Stored tree state changes from nodes: readonly ProductTreeNode[] to root: ProductTreeNode | null.",
+      "evidence": [
+        {"revision": "base", "path": "src/app/product-tree/state/product-tree.reducer.ts", "line": 19},
+        {"revision": "head", "path": "src/app/product-tree/state/product-tree.reducer.ts", "line": 36}
+      ],
+      "ranges": [
+        {"revision": "base", "line_start": 19, "line_end": 19},
+        {"revision": "head", "line_start": 36, "line_end": 36}
+      ]
+    },
+    {
+      "id": "reducer-success",
+      "path": "src/app/product-tree/state/product-tree.reducer.ts",
+      "symbol": "LoadTreeSuccessAction",
+      "criticality": "critical",
+      "why_required": "The success reducer reads nodes on base and root on head.",
+      "evidence": [
+        {"revision": "base", "path": "src/app/product-tree/state/product-tree.reducer.ts", "line": 53},
+        {"revision": "head", "path": "src/app/product-tree/state/product-tree.reducer.ts", "line": 103}
+      ],
+      "ranges": [
+        {"revision": "base", "line_start": 53, "line_end": 53},
+        {"revision": "head", "line_start": 102, "line_end": 103}
+      ]
+    },
+    {
+      "id": "selector",
+      "path": "src/app/product-tree/state/product-tree.reducer.ts",
+      "symbol": "selectRoot",
+      "criticality": "critical",
+      "why_required": "Base publishes selectNodes and head publishes selectRoot.",
+      "evidence": [
+        {"revision": "base", "path": "src/app/product-tree/state/product-tree.reducer.ts", "line": 139},
+        {"revision": "head", "path": "src/app/product-tree/state/product-tree.reducer.ts", "line": 209}
+      ],
+      "ranges": [
+        {"revision": "base", "line_start": 139, "line_end": 139},
+        {"revision": "head", "line_start": 209, "line_end": 209}
+      ]
+    },
+    {
+      "id": "view-read",
+      "path": "src/app/product-tree/components/product-tree-view/product-tree-view.component.ts",
+      "symbol": "ProductTreeViewComponent",
+      "criticality": "critical",
+      "why_required": "The view reads selectNodes on base and selectRoot on head.",
+      "evidence": [
+        {"revision": "base", "path": "src/app/product-tree/components/product-tree-view/product-tree-view.component.ts", "line": 30},
+        {"revision": "head", "path": "src/app/product-tree/components/product-tree-view/product-tree-view.component.ts", "line": 49}
+      ],
+      "ranges": [
+        {"revision": "base", "line_start": 30, "line_end": 30},
+        {"revision": "head", "line_start": 49, "line_end": 49}
+      ]
+    },
+    {
+      "id": "mock-tree",
+      "path": "src/app/product-tree/api/mock-product-api.interceptor.ts",
+      "symbol": "",
+      "criticality": "critical",
+      "why_required": "The unchanged GET /api/product-tree handler supplies the body consumed by getProductTree. Both revisions are required.",
+      "evidence": [
+        {"revision": "base", "path": "src/app/product-tree/api/mock-product-api.interceptor.ts", "line": 15},
+        {"revision": "head", "path": "src/app/product-tree/api/mock-product-api.interceptor.ts", "line": 16}
+      ],
+      "ranges": [
+        {"revision": "base", "line_start": 15, "line_end": 16},
+        {"revision": "head", "line_start": 15, "line_end": 16}
+      ]
+    },
+    {
+      "id": "node-type",
+      "path": "src/app/product-tree/models/product-tree-node.ts",
+      "symbol": "ProductTreeNode",
+      "criticality": "high",
+      "why_required": "The unchanged ProductTreeNode interface is the type named by the new signature.",
+      "evidence": [
+        {"revision": "head", "path": "src/app/product-tree/models/product-tree-node.ts", "line": 14}
+      ],
+      "ranges": [
+        {"revision": "base", "line_start": 14, "line_end": 19},
+        {"revision": "head", "line_start": 14, "line_end": 19}
+      ]
+    },
+    {
+      "id": "demo-fixture",
+      "path": "src/app/product-tree/data/product-tree.demo.ts",
+      "symbol": "PRODUCT_TREE_DEMO_DATA",
+      "criticality": "high",
+      "why_required": "The mock response body is this fixture, typed as ProductTreeNode on head.",
+      "evidence": [
+        {"revision": "head", "path": "src/app/product-tree/data/product-tree.demo.ts", "line": 3}
+      ],
+      "ranges": [
+        {"revision": "base", "line_start": 3, "line_end": 3},
+        {"revision": "head", "line_start": 3, "line_end": 3}
+      ]
+    }
+  ],
+  "unresolved_candidates": [
+    {
+      "id": "risk-detail-module",
+      "path": "src/app/product-tree/product-tree.module.ts",
+      "symbol": "RiskDetailComponent",
+      "note": "Imported from ./risk-detail/risk-detail.component, which is absent at both commits."
+    },
+    {
+      "id": "risk-detail-spec",
+      "path": "src/app/product-tree/product-tree.component.spec.ts",
+      "symbol": "RiskDetailComponent",
+      "note": "The same missing component is imported by the spec. It is not part of the getProductTree contract."
+    }
+  ],
+  "excluded": [
+    {
+      "id": "app-module",
+      "path": "src/app/app.module.ts",
+      "note": "No getProductTree or /api/product-tree reference, and the file is unchanged."
+    },
+    {
+      "id": "feature-module-route",
+      "path": "src/app/product-tree/product-tree.module.ts",
+      "note": "The diff adds a risk-detail route. That route is not on the API contract path."
+    }
+  ]
+}

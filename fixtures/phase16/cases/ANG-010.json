@@ -1,0 +1,41 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "746cf77da2808bc1099248a00ea6068bc8d4eb21",
+  "case_id": "ANG-010",
+  "case_kind": "defect",
+  "expected_behavior": "save returns while locked, matching the disabled button",
+  "expected_finding": "The template disables the button, but save still runs while locked",
+  "match_terms": [
+    "disabled",
+    "locked"
+  ],
+  "primary_locations": [
+    {
+      "end_line": 48,
+      "path": "src/app/beacon/beacon.component.ts",
+      "start_line": 48,
+      "symbol": "save"
+    }
+  ],
+  "reproduction": "The baseline save method returns when locked. The template binds disabled to locked.",
+  "required_context": [
+    {
+      "path": "src/app/beacon/beacon.component.html",
+      "reason": "the button is disabled while locked",
+      "symbol": "disabled"
+    },
+    {
+      "path": "src/app/beacon/beacon.component.ts",
+      "reason": "the method no longer checks locked",
+      "symbol": "save"
+    }
+  ],
+  "schema_version": "1.0",
+  "severity": "medium",
+  "tags": [
+    "angular",
+    "template"
+  ],
+  "title": "The disabled control is not enforced by the save method"
+}

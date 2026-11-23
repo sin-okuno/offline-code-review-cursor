@@ -1,0 +1,41 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "6ebffb7f5c7d898134819482e2d6acc60e2444ea",
+  "case_id": "ANG-006",
+  "case_kind": "defect",
+  "expected_behavior": "Save returns while the form is invalid",
+  "expected_finding": "An invalid form can still dispatch the save action",
+  "match_terms": [
+    "form.invalid",
+    "required"
+  ],
+  "primary_locations": [
+    {
+      "end_line": 48,
+      "path": "src/app/beacon/beacon.component.ts",
+      "start_line": 48,
+      "symbol": "save"
+    }
+  ],
+  "reproduction": "The baseline save method returns when the form is invalid.",
+  "required_context": [
+    {
+      "path": "src/app/beacon/beacon.component.ts",
+      "reason": "the name control is required",
+      "symbol": "Validators"
+    },
+    {
+      "path": "src/app/beacon/beacon.component.html",
+      "reason": "the template marks the control required",
+      "symbol": "required"
+    }
+  ],
+  "schema_version": "1.0",
+  "severity": "medium",
+  "tags": [
+    "angular",
+    "forms"
+  ],
+  "title": "Save ignores the required form control"
+}

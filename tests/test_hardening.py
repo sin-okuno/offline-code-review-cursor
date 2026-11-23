@@ -438,7 +438,7 @@ class AngularDrfAcceptanceTests(unittest.TestCase):
         ):
             self.assertIn(code_name, codes)
         self.assertNotIn("WORKTREE_DIRTY", codes)
-        self.assertIn("Angular and TypeScript semantic analysis is out of scope", markdown)
+        self.assertIn("Angular and TypeScript type-checker analysis is out of scope", markdown)
 
         write(self.repo / "backend" / "orders" / "serializers.py", _SERIALIZERS_HEAD + b"DIRTY-WORKTREE-LINE\n")
         write(self.repo / "UNTRACKED.py", b"UNTRACKED-LINE\n")

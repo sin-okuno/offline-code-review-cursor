@@ -1,0 +1,48 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "24426a5095677570a39d8c5a66ca10884d096d07",
+  "case_id": "ANG-008",
+  "case_kind": "defect",
+  "expected_behavior": "saveBeaconSuccess replaces the saved beacon in the list",
+  "expected_finding": "The stored list stays stale because save success is not dispatched",
+  "match_terms": [
+    "stale list",
+    "saveBeaconSuccess"
+  ],
+  "primary_locations": [
+    {
+      "end_line": 52,
+      "path": "src/app/beacon/beacon.effects.ts",
+      "start_line": 52,
+      "symbol": "saveBeaconEffect"
+    }
+  ],
+  "reproduction": "The baseline maps a successful response to saveBeaconSuccess.",
+  "required_context": [
+    {
+      "path": "src/app/beacon/beacon.effects.ts",
+      "reason": "success action is not emitted",
+      "symbol": "saveBeaconEffect"
+    },
+    {
+      "path": "src/app/beacon/beacon.reducer.ts",
+      "reason": "the list update never runs",
+      "symbol": "saveBeaconSuccess"
+    },
+    {
+      "path": "src/app/beacon/beacon.selectors.ts",
+      "reason": "the screen keeps the previous list",
+      "symbol": "selectBeacons"
+    }
+  ],
+  "schema_version": "1.0",
+  "severity": "high",
+  "tags": [
+    "angular",
+    "ngrx",
+    "effect",
+    "reducer"
+  ],
+  "title": "Successful save does not update the stored list"
+}

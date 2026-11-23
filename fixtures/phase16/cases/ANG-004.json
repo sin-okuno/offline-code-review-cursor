@@ -1,0 +1,42 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "06e7fedb5a38d770da965a18ce6b54a1cc062a07",
+  "case_id": "ANG-004",
+  "case_kind": "defect",
+  "expected_behavior": "Navigation runs only after saveBeaconSuccess",
+  "expected_finding": "Navigation runs when the save starts, before the API succeeds",
+  "match_terms": [
+    "before the api",
+    "navigate"
+  ],
+  "primary_locations": [
+    {
+      "end_line": 66,
+      "path": "src/app/beacon/beacon.effects.ts",
+      "start_line": 65,
+      "symbol": "navigateAfterSaveEffect"
+    }
+  ],
+  "reproduction": "The baseline navigation effect listens for saveBeaconSuccess.",
+  "required_context": [
+    {
+      "path": "src/app/beacon/beacon.effects.ts",
+      "reason": "navigation listens to the start action",
+      "symbol": "navigateAfterSaveEffect"
+    },
+    {
+      "path": "src/app/beacon/beacon.service.ts",
+      "reason": "the write is still asynchronous",
+      "symbol": "saveBeacon"
+    }
+  ],
+  "schema_version": "1.0",
+  "severity": "high",
+  "tags": [
+    "angular",
+    "ngrx",
+    "effect"
+  ],
+  "title": "Navigation starts before the save request succeeds"
+}

@@ -1,0 +1,42 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "1a98ab8eadb772267e9cb929048d1d2611bf1ba8",
+  "case_id": "ANG-002",
+  "case_kind": "defect",
+  "expected_behavior": "The saved beacon replaces the previous item without mutating the old array",
+  "expected_finding": "The reducer mutates the state list instead of returning a new state",
+  "match_terms": [
+    "mutates",
+    "push"
+  ],
+  "primary_locations": [
+    {
+      "end_line": 43,
+      "path": "src/app/beacon/beacon.reducer.ts",
+      "start_line": 40,
+      "symbol": "beaconReducer"
+    }
+  ],
+  "reproduction": "The baseline save handler returns a new object. The changed handler calls push.",
+  "required_context": [
+    {
+      "path": "src/app/beacon/beacon.reducer.ts",
+      "reason": "state is mutated",
+      "symbol": "saveBeaconSuccess"
+    },
+    {
+      "path": "src/app/beacon/beacon.selectors.ts",
+      "reason": "the selector reads the same list",
+      "symbol": "selectBeacons"
+    }
+  ],
+  "schema_version": "1.0",
+  "severity": "high",
+  "tags": [
+    "angular",
+    "ngrx",
+    "reducer"
+  ],
+  "title": "Save reducer mutates the beacon list"
+}

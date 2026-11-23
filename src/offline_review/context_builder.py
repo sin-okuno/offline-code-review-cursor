@@ -7,6 +7,7 @@ from offline_review.dependency_index import IndexedModule, PythonAnalysis, analy
 from offline_review.parse_cache import ParseCache
 from offline_review.diff_parser import ParsedFile, coalesce_lines, combine_diff, parse_raw_diff_z
 from offline_review.git_adapter import GitAdapter, is_lfs_pointer
+from offline_review.context_selector import ContextBudget, select_angular_context
 from offline_review.models import (
     SCHEMA_VERSION,
     TOOL_PHASE,
@@ -50,6 +51,7 @@ def build_context(
     comparison: str,
     python_roots: tuple[str, ...] = (),
     cache: ParseCache | None = None,
+    budget: ContextBudget | None = None,
 ) -> ReviewContext:
     if comparison not in {"merge-base", "direct"}:
         raise GitError(f"unsupported comparison mode: {comparison}")
@@ -129,7 +131,8 @@ def build_context(
                 code="WORKTREE_DIRTY",
                 message=(
                     "The work tree or index differs from HEAD, or untracked files are present. "
-                    "This report uses the resolved commits and ignores uncommitted content."
+                    "The diff is only between the resolved base and head commits. "
+                    "Uncommitted worktree content is not part of this report."
                 ),
                 commit=head_commit,
             )
@@ -181,6 +184,14 @@ def build_context(
         errors=(),
         python_roots=python_roots,
         import_relationships=python.relationships,
+        angular_context=select_angular_context(
+            adapter,
+            files,
+            diff_base=diff_base,
+            head=head_commit,
+            budget=budget or ContextBudget(),
+            cache_directory=None if cache is None else cache.directory,
+        ),
     )
 
 
@@ -324,9 +335,8 @@ def _phase_warnings(files: tuple[FileChange, ...]) -> list[Warning]:
             Warning(
                 code="ANGULAR_SEMANTIC_OUT_OF_SCOPE",
                 message=(
-                    "Angular and TypeScript semantic analysis is out of scope. "
-                    "Diffs and changed line ranges for these paths are included, "
-                    "and no component or NgRx graph was built."
+                    "Angular and TypeScript type-checker analysis is out of scope. "
+                    "angular_context is a partial lexical result, not a complete semantic graph."
                 ),
             )
         )

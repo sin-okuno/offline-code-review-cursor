@@ -1,0 +1,41 @@
+{
+  "ambiguous": false,
+  "base_revision": "1da882dfca3c24824625282bfead94b4dbdb8c1e",
+  "buggy_revision": "edaff7ea867d7c352281e5e558f6fb366d7762ac",
+  "case_id": "ANG-009",
+  "case_kind": "defect",
+  "expected_behavior": "ngOnDestroy unsubscribes the name subscription",
+  "expected_finding": "The manual subscription is not released when the component is destroyed",
+  "match_terms": [
+    "unsubscribe",
+    "ngOnDestroy"
+  ],
+  "primary_locations": [
+    {
+      "end_line": 31,
+      "path": "src/app/beacon/beacon.component.ts",
+      "start_line": 31,
+      "symbol": "ngOnInit"
+    }
+  ],
+  "reproduction": "The baseline component implements ngOnDestroy and unsubscribes.",
+  "required_context": [
+    {
+      "path": "src/app/beacon/beacon.component.ts",
+      "reason": "the manual subscription remains",
+      "symbol": "subscribe"
+    },
+    {
+      "path": "src/app/beacon/beacon.selectors.ts",
+      "reason": "the observable stays active",
+      "symbol": "selectBeaconName"
+    }
+  ],
+  "schema_version": "1.0",
+  "severity": "medium",
+  "tags": [
+    "angular",
+    "rxjs"
+  ],
+  "title": "The name subscription outlives the component"
+}
